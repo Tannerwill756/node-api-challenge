@@ -126,6 +126,18 @@ router.put(
   }
 );
 
+// DELETE a action
+router.delete("/:id/actions/:id", (req, res) => {
+  actionsDb
+    .remove(req.params.id)
+    .then((dlt) => {
+      res.status(200).json(dlt);
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "Issue deleting this action" });
+    });
+});
+
 //custom middleware
 function validateProjectId(req, res, next) {
   db.get(req.params.id)
