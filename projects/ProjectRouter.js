@@ -75,18 +75,23 @@ router.get("/:id/actions", validateProjectId, (req, res) => {
 });
 
 // GET specific project action
-router.get("/:id/actions/:id", validateActionId, (req, res) => {
-  actionsDb
-    .get(req.params.id)
-    .then((action) => {
-      res.status(200).json(action);
-    })
-    .catch((err) => {
-      res.status(500).json({
-        error: "Issue retrieving this action",
+router.get(
+  "/:id/actions/:id",
+
+  validateActionId,
+  (req, res) => {
+    actionsDb
+      .get(req.params.id)
+      .then((action) => {
+        res.status(200).json(action);
+      })
+      .catch((err) => {
+        res.status(500).json({
+          error: "Issue retrieving this action",
+        });
       });
-    });
-});
+  }
+);
 
 // POST new actions
 router.post("/:id/actions", validateProjectId, validateAction, (req, res) => {
@@ -138,11 +143,11 @@ router.delete("/:id/actions/:id", (req, res) => {
     });
 });
 
-//custom middleware
+// -----------------  custom middleware   ----------------------------
 function validateProjectId(req, res, next) {
   db.get(req.params.id)
     .then((prj) => {
-      if (!prj) {
+      if (prj === null) {
         res.status(400).json({
           errorMessage: "The project with this ID does not exist.",
         });
