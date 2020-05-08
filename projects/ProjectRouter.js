@@ -80,6 +80,7 @@ router.get(
 
   validateActionId,
   (req, res) => {
+    console.log("get:", req.params.id);
     actionsDb
       .get(req.params.id)
       .then((action) => {
@@ -115,24 +116,19 @@ router.post("/:id/actions", validateProjectId, validateAction, (req, res) => {
 });
 
 // UPDATE a action
-router.put(
-  "/:id/actions/:id",
-
-  validateAction,
-  (req, res) => {
-    actionsDb
-      .update(req.params.id, req.body)
-      .then((upd) => {
-        res.status(200).json(upd);
-      })
-      .catch((err) => {
-        res.status(500).json({ error: "Issues updating this action" });
-      });
-  }
-);
+router.put("/:id/actions/:id", validateActionId, validateAction, (req, res) => {
+  actionsDb
+    .update(req.params.id, req.body)
+    .then((upd) => {
+      res.status(200).json(upd);
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "Issues updating this action" });
+    });
+});
 
 // DELETE a action
-router.delete("/:id/actions/:id", (req, res) => {
+router.delete("/:id/actions/:id", validateActionId, (req, res) => {
   actionsDb
     .remove(req.params.id)
     .then((dlt) => {
@@ -145,8 +141,10 @@ router.delete("/:id/actions/:id", (req, res) => {
 
 // -----------------  custom middleware   ----------------------------
 function validateProjectId(req, res, next) {
-  db.get(req.params.id)
+  project_id = req.params.id;
+  db.get(project_id)
     .then((prj) => {
+      console.log("then prj!", prj);
       if (prj === null) {
         res.status(400).json({
           errorMessage: "The project with this ID does not exist.",
@@ -191,12 +189,12 @@ function validateAction(req, res, next) {
 }
 
 function validateActionId(req, res, next) {
-  console.log(req.params.id);
-  console.log("body id", req.params);
+  //   console.log(req.params.id);
+  //   console.log("body id", req.params);
   actionsDb
     .get(req.params.id)
     .then((id) => {
-      if (req.params.id != req.body.id) {
+      if (id) {
         next();
       } else {
         res
