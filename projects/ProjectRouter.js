@@ -83,7 +83,7 @@ router.post("/:id/actions", validateProjectId, validateAction, (req, res) => {
     description: req.body.description,
     notes: req.body.notes,
   };
-  //   console.log(prjctId);
+
   actionsDb
     .insert(newAction)
     .then((newPost) => {
@@ -128,7 +128,13 @@ function validateProject(req, res, next) {
 function validateAction(req, res, next) {
   if (req.body) {
     if (req.body.description && req.body.notes) {
-      next();
+      if (req.body.description.length < 129) {
+        next();
+      } else {
+        res
+          .status(400)
+          .json({ message: "description has a max character length of 128" });
+      }
     } else {
       res.status(400).json({ message: "description and notes is required" });
     }
