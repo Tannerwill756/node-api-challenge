@@ -40,13 +40,24 @@ Demonstrate your understanding of this Sprint's concepts by answering the follow
 
 - [ ] Mention two parts of Express that you learned about this week.
 
+- server-side routing
+- middlewares
+
 - [ ] Describe Middleware?
+
+- used for extra functionality like handling authentication and logging.
 
 - [ ] Describe a Resource?
 
+- everything is a resource, accessible via a unique uri, can have multiple representations..
+
 - [ ] What can the API return to help clients know if a request was successful?
 
+- If the request was successful, the api should return a status 200 OK otherwise return an error status depending on the error.
+
 - [ ] How can we partition our application into sub-applications?
+
+- express Routers
 
 ## Minimum Viable Product
 
