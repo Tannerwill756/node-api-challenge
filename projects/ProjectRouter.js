@@ -77,7 +77,7 @@ router.get("/:id/actions", validateProjectId, (req, res) => {
 // GET specific project action
 router.get(
   "/:id/actions/:id",
-
+  validateProjectId,
   validateActionId,
   (req, res) => {
     console.log("get:", req.params.id);
