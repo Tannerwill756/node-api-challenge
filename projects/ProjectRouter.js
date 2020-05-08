@@ -63,14 +63,27 @@ router.delete("/:id", validateProjectId, (req, res) => {
 
 // GET project actions
 router.get("/:id/actions", validateProjectId, (req, res) => {
-  actionsDb
-    .get()
+  db.getProjectActions(req.params.id)
     .then((actions) => {
       res.status(200).json(actions);
     })
     .catch((err) => {
       res.status(500).json({
         error: "Issue retrieving these actions",
+      });
+    });
+});
+
+// GET specific project action
+router.get("/:id/actions/:id", validateActionId, (req, res) => {
+  actionsDb
+    .get(req.params.id)
+    .then((action) => {
+      res.status(200).json(action);
+    })
+    .catch((err) => {
+      res.status(500).json({
+        error: "Issue retrieving this action",
       });
     });
 });
@@ -95,6 +108,23 @@ router.post("/:id/actions", validateProjectId, validateAction, (req, res) => {
       });
     });
 });
+
+// UPDATE a action
+router.put(
+  "/:id/actions/:id",
+
+  validateAction,
+  (req, res) => {
+    actionsDb
+      .update(req.params.id, req.body)
+      .then((upd) => {
+        res.status(200).json(upd);
+      })
+      .catch((err) => {
+        res.status(500).json({ error: "Issues updating this action" });
+      });
+  }
+);
 
 //custom middleware
 function validateProjectId(req, res, next) {
@@ -141,6 +171,25 @@ function validateAction(req, res, next) {
   } else {
     res.status(400).json({ message: "missing action info" });
   }
+}
+
+function validateActionId(req, res, next) {
+  console.log(req.params.id);
+  console.log("body id", req.params);
+  actionsDb
+    .get(req.params.id)
+    .then((id) => {
+      if (req.params.id != req.body.id) {
+        next();
+      } else {
+        res
+          .status(400)
+          .json({ message: "The action with this ID doesn't exist" });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "Issue retrieving this action" });
+    });
 }
 
 module.exports = router;
